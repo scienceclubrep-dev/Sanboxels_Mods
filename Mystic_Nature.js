@@ -1,10 +1,11 @@
-// Sandboxels Mod: Mystic Nature (Fixed UI Injection)
-// Save this file as "mystic_nature.js"
+// Sandboxels Mod: Mystic Nature
+// Save this file exactly as "Mystic_Nature.js"
 
+// 1. Define custom elements directly into the Sandboxels global object
 elements.magic_pollen = {
     color: "#dfa3ff",
-    behavior: behaviors.POWDER, 
-    category: "powders", // The game automatically parses this into the toolbar
+    behavior: behaviors.POWDER, // Utilizes base sand/powder physics
+    category: "powders",
     state: "solid",
     density: 1200,
     reactions: {
@@ -15,17 +16,17 @@ elements.magic_pollen = {
 };
 
 elements.mystic_vine = {
-    color: ["#2ba84a", "#248f3f", "#3ebd62"], 
+    color: ["#2ba84a", "#248f3f", "#3ebd62"], // Randomizes layout color
     behavior: [
         "CR:magic_pollen%1 | CR:mystic_vine%2 | CR:magic_pollen%1",
         "XX                   | CH:mystic_vine   | XX",
         "XX                   | XX               | XX"
-    ], 
-    category: "life", // Properly assigns element to the "life" category tab
+    ], // Matrix grid rules: spreads upward and outward randomly over time
+    category: "life",
     state: "solid",
     tempHigh: 150,
     vType: "fire",
-    stateHigh: "fire", 
+    stateHigh: "fire",
     burn: 40,
     burnTime: 30,
     desc: "A fast-growing magical plant layer that thrives on moisture."
@@ -33,8 +34,8 @@ elements.mystic_vine = {
 
 elements.wither_acid = {
     color: "#1a1c1a",
-    behavior: behaviors.LIQUID, 
-    category: "liquids", // Properly assigns element to the "liquids" category tab
+    behavior: behaviors.LIQUID, // Utilizes liquid flow physics
+    category: "liquids",
     state: "liquid",
     density: 1100,
     viscosity: 10,
@@ -47,11 +48,18 @@ elements.wither_acid = {
     desc: "A dark, caustic fluid that instantly decomposes plants, vines, and organic material into ash."
 };
 
-// Explicitly force registration into Sandboxels' structural menu system safely
-runAfterLoad(function() {
+// 2. The critical step: Inject elements using Sandboxels' official autogen event hook
+runAfterAutogen(function() {
+    // Only proceed if the internal UI layout tracker exists
     if (window.elementGrid) {
-        if (!elementGrid["powders"].includes("magic_pollen")) elementGrid["powders"].push("magic_pollen");
-        if (!elementGrid["life"].includes("mystic_vine")) elementGrid["life"].push("mystic_vine");
-        if (!elementGrid["liquids"].includes("wither_acid")) elementGrid["liquids"].push("wither_acid");
+        if (!elementGrid["powders"].includes("magic_pollen")) {
+            elementGrid["powders"].push("magic_pollen");
+        }
+        if (!elementGrid["life"].includes("mystic_vine")) {
+            elementGrid["life"].push("mystic_vine");
+        }
+        if (!elementGrid["liquids"].includes("wither_acid")) {
+            elementGrid["liquids"].push("wither_acid");
+        }
     }
 });
